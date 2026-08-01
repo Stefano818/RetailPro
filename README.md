@@ -276,7 +276,3 @@ Desarrollado como proyecto de portfolio para demostrar habilidades en:
 - Automatización
 - Desarrollo de aplicaciones empresariales
 
----
-
-⭐ Si este proyecto te resulta interesante, no olvides dejar una estrella en el repositorio.
-````
