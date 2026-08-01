@@ -174,25 +174,12 @@ python main.py
 
 ---
 
-## 🤝 Contribuciones
-
-Las contribuciones son bienvenidas.
-
-Si encontrás un error o querés proponer una mejora, podés abrir un **Issue** o enviar un **Pull Request**.
-
----
 
 ## 📈 Estado del proyecto
 
 🚧 En desarrollo.
 
 RetailPro continúa evolucionando con nuevas funcionalidades e integraciones orientadas a ofrecer una solución completa para la gestión comercial.
-
----
-
-## 📄 Licencia
-
-Este proyecto se distribuye bajo la licencia **MIT**.
 
 ---
 
@@ -208,6 +195,4 @@ Desarrollado como proyecto de portfolio para demostrar habilidades en:
 - Automatización
 - Desarrollo de Aplicaciones Empresariales
 
----
 
-⭐ Si este proyecto te resulta interesante, no olvides dejar una estrella en el repositorio.
