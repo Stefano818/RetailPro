@@ -389,4 +389,3 @@ Desarrollado como proyecto de portfolio para demostrar habilidades en:
 - Autenticación
 - Automatización
 - Desarrollo de aplicaciones empresariales
-````
