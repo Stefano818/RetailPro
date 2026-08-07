@@ -1,4 +1,3 @@
-````markdown
 # 🛒 RetailPro
 
 > Sistema profesional de gestión de ventas e inventario desarrollado en Python.
