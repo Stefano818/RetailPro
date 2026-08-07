@@ -18,6 +18,7 @@ class ProductService:
         self.category_repository = category_repository
         self.supplier_repository = supplier_repository
 
+
     def get_all(self) -> list[Product]:
         return self.product_repository.get_all()
 
@@ -27,6 +28,26 @@ class ProductService:
     def get_low_stock(self) -> list[Product]:
         return self.product_repository.get_low_stock()
 
+    def get_out_of_stock(self) -> list[Product]:
+        return self.product_repository.get_out_of_stock()
+
+    def get_by_category(self, category_id: int) -> list[Product]:
+        return self.product_repository.get_by_category(category_id)
+
+    def get_by_supplier(self, supplier_id: int) -> list[Product]:
+        return self.product_repository.get_by_supplier(supplier_id)
+
+    def search(self, search_term: str) -> list[Product]:
+        search_term = search_term.strip()
+
+        if not search_term:
+            return self.get_active()
+
+        return self.product_repository.search(search_term)
+
+    def count(self) -> int:
+        return self.product_repository.count()
+
     def get_by_id(self, product_id: int) -> Product:
         product = self.product_repository.get_by_id(product_id)
 
@@ -34,6 +55,7 @@ class ProductService:
             raise ValueError("Product not found.")
 
         return product
+
 
     def _validate_prices(
         self,
@@ -66,8 +88,7 @@ class ProductService:
 
             if wholesale_price < purchase_price:
                 raise ValueError(
-                    "Wholesale price cannot be lower "
-                    "than purchase price."
+                    "Wholesale price cannot be lower than purchase price."
                 )
 
     def _validate_wholesale(
@@ -77,21 +98,23 @@ class ProductService:
     ) -> None:
 
         if wholesale_price is not None:
+
             if (
                 wholesale_min_quantity is None
                 or wholesale_min_quantity <= 0
             ):
                 raise ValueError(
-                    "Wholesale minimum quantity is required "
-                    "when wholesale price is configured."
+                    "Wholesale minimum quantity is required."
                 )
 
-        if wholesale_min_quantity is not None:
-            if wholesale_min_quantity <= 0:
-                raise ValueError(
-                    "Wholesale minimum quantity must "
-                    "be greater than zero."
-                )
+        if (
+            wholesale_min_quantity is not None
+            and wholesale_min_quantity <= 0
+        ):
+            raise ValueError(
+                "Wholesale minimum quantity must be greater than zero."
+            )
+
 
     def create(
         self,
@@ -125,7 +148,7 @@ class ProductService:
         if not unit:
             raise ValueError("Product unit is required.")
 
-        if self.product_repository.get_by_code(code):
+        if self.product_repository.exists_code(code):
             raise ValueError(
                 "A product with this code already exists."
             )
@@ -133,7 +156,7 @@ class ProductService:
         if barcode:
             barcode = barcode.strip()
 
-            if self.product_repository.get_by_barcode(barcode):
+            if self.product_repository.exists_barcode(barcode):
                 raise ValueError(
                     "A product with this barcode already exists."
                 )
@@ -144,11 +167,10 @@ class ProductService:
             raise ValueError("Category not found.")
 
         if not category.is_active:
-            raise ValueError(
-                "Cannot assign an inactive category."
-            )
+            raise ValueError("Category is inactive.")
 
         if supplier_id is not None:
+
             supplier = self.supplier_repository.get_by_id(
                 supplier_id
             )
@@ -157,9 +179,7 @@ class ProductService:
                 raise ValueError("Supplier not found.")
 
             if not supplier.is_active:
-                raise ValueError(
-                    "Cannot assign an inactive supplier."
-                )
+                raise ValueError("Supplier is inactive.")
 
         self._validate_prices(
             purchase_price,
@@ -187,11 +207,7 @@ class ProductService:
             barcode=barcode,
             name=name,
             brand=brand.strip() if brand else None,
-            description=(
-                description.strip()
-                if description
-                else None
-            ),
+            description=description.strip() if description else None,
             category_id=category_id,
             supplier_id=supplier_id,
             purchase_price=purchase_price,
@@ -206,9 +222,29 @@ class ProductService:
 
         return self.product_repository.create(product)
 
-    def deactivate(self, product_id: int) -> Product:
-        product = self.get_by_id(product_id)
 
-        product.is_active = False
+    def update(
+        self,
+        product: Product,
+    ) -> Product:
 
         return self.product_repository.update(product)
+
+
+    def deactivate(
+        self,
+        product_id: int,
+    ) -> Product:
+
+        product = self.get_by_id(product_id)
+
+        return self.product_repository.delete(product)
+
+    def restore(
+        self,
+        product_id: int,
+    ) -> Product:
+
+        product = self.get_by_id(product_id)
+
+        return self.product_repository.restore(product)
